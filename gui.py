@@ -5,6 +5,12 @@ from minimax_ai import get_best_move as minimax_move
 from alpha_beta_ai import get_best_move as alpha_beta_move
 from tictactoe import get_available_moves
 
+pygame.mixer.init()
+
+click_sound = pygame.mixer.Sound("assets/sounds/click.wav")
+ai_sound = pygame.mixer.Sound("assets/sounds/pop.wav")
+win_sound = pygame.mixer.Sound("assets/sounds/win.wav")
+
 pygame.init()
 
 # screen borders
@@ -15,7 +21,7 @@ LINE_COLOR = (23, 145, 135)
 
 # create screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Tic-Tac-Toe AI")
+pygame.display.set_caption("Tic-Tac-Toe With AI Algorithms")
 
 difficulty = None
 
@@ -140,10 +146,12 @@ while True:
 
             if board[row][col] == "" and current_player == "X":
                 board[row][col] = "X"
+                click_sound.play()
                 draw_symbol(row, col, "X")
                 pygame.display.update()
 
                 if check_win("X"):
+                    win_sound.play()
                     show_message("You Win!")
                     pygame.quit()
                     sys.exit()
@@ -168,10 +176,12 @@ while True:
                     ai_col = ai_move % 3
                     if board[ai_row][ai_col] == "":
                         board[ai_row][ai_col] = "O"
+                        ai_sound.play()
                         draw_symbol(ai_row, ai_col, "O")
                         pygame.display.update()
 
                 if check_win("O"):
+                    win_sound.play()
                     show_message("AI Wins!")
                     pygame.quit()
                     sys.exit()
