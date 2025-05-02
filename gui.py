@@ -1,6 +1,9 @@
 import pygame
 import sys
+import random
 from minimax_ai import get_best_move as minimax_move
+from alpha_beta_ai import get_best_move as alpha_beta_move
+from tictactoe import get_available_moves
 
 pygame.init()
 
@@ -14,8 +17,7 @@ LINE_COLOR = (23, 145, 135)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tic-Tac-Toe AI")
 
-# draw background
-screen.fill(BG_COLOR)
+difficulty = None
 
 def draw_lines():
     # horizontal lines
@@ -25,7 +27,6 @@ def draw_lines():
     pygame.draw.line(screen, LINE_COLOR, (200, 0), (200, 600), LINE_WIDTH)
     pygame.draw.line(screen, LINE_COLOR, (400, 0), (400, 600), LINE_WIDTH)
 
-draw_lines()
 def draw_symbol(row, col, player):
     centerX = col * 200 + 100
     centerY = row * 200 + 100
@@ -40,16 +41,6 @@ def draw_symbol(row, col, player):
     elif player == "O":
         # draw O
         pygame.draw.circle(screen, (242, 235, 211), (centerX, centerY), 60, 15)
-
-pygame.display.update()
-
-# game board state (3x3 grid)
-board = [["" for _ in range(3)] for _ in range(3)]
-
-# Player turns:
-# "X" = Human
-# "O" = AI
-current_player = "X"
 
 
 def flatten_board(board_2d):
@@ -87,6 +78,54 @@ def show_message(text):
     pygame.display.update()
     pygame.time.delay(2000)  # wait 2 seconds
 
+def draw_difficulty_menu():
+    screen.fill((0, 0, 0))
+    font = pygame.font.SysFont(None, 60)
+    title = font.render("Choose Difficulty", True, (255, 255, 255))
+    easy = font.render("1 - Easy (Random)", True, (0, 255, 0))
+    medium = font.render("2 - Medium (Minimax)", True, (255, 255, 0))
+    hard = font.render("3 - Hard (Alpha-Beta)", True, (255, 0, 0))
+
+    screen.blit(title, (WIDTH//2 - title.get_width()//2, 80))
+    screen.blit(easy, (WIDTH//2 - easy.get_width()//2, 200))
+    screen.blit(medium, (WIDTH//2 - medium.get_width()//2, 300))
+    screen.blit(hard, (WIDTH//2 - hard.get_width()//2, 400))
+    pygame.display.update()
+
+def get_ai_move(flat_board, mode):
+    if mode == "easy":
+        return random.choice(get_available_moves(flat_board))
+    elif mode == "medium":
+        return minimax_move(flat_board)
+    elif mode == "hard":
+        return alpha_beta_move(flat_board)
+
+# difficulty selection
+draw_difficulty_menu()
+selecting = True
+while selecting:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+                difficulty = "easy"
+                selecting = False
+            elif event.key == pygame.K_2:
+                difficulty = "medium"
+                selecting = False
+            elif event.key == pygame.K_3:
+                difficulty = "hard"
+                selecting = False
+
+# initialize the game
+board = [["" for _ in range(3)] for _ in range(3)]
+current_player = "X"
+screen.fill(BG_COLOR)
+draw_lines()
+pygame.display.update()
+
 # main loop
 while True:
     for event in pygame.event.get():
@@ -95,69 +134,53 @@ while True:
             sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mouseX = event.pos[0]  # x
-            mouseY = event.pos[1]  # y
+            mouseX, mouseY = event.pos
+            row = mouseY // 200
+            col = mouseX // 200
 
-            clicked_row = mouseY // 200
-            clicked_col = mouseX // 200
-
-            if board[clicked_row][clicked_col] == "" and current_player == "X":
-                board[clicked_row][clicked_col] = "X"
-                draw_symbol(clicked_row, clicked_col, "X")
+            if board[row][col] == "" and current_player == "X":
+                board[row][col] = "X"
+                draw_symbol(row, col, "X")
                 pygame.display.update()
 
-                # let AI respond as "O"
-                current_player = "O"
-                pygame.time.delay(500)  # delay to mimic the real world game
+                if check_win("X"):
+                    show_message("You Win!")
+                    pygame.quit()
+                    sys.exit()
+                elif is_draw():
+                    show_message("Draw!")
+                    pygame.quit()
+                    sys.exit()
 
-                # check for draw before AI moves ( always check before moves)
+                current_player = "O"
+                pygame.time.delay(300)
+
                 if is_draw():
                     show_message("Draw!")
                     pygame.quit()
                     sys.exit()
 
                 flat_board = flatten_board(board)
-                ai_move = minimax_move(flat_board)
+                ai_move = get_ai_move(flat_board, difficulty)
 
                 if ai_move is not None:
                     ai_row = ai_move // 3
                     ai_col = ai_move % 3
-
                     if board[ai_row][ai_col] == "":
                         board[ai_row][ai_col] = "O"
                         draw_symbol(ai_row, ai_col, "O")
                         pygame.display.update()
 
-                    if check_win("O"):
-                        show_message("AI Wins!")
-                        pygame.quit()
-                        sys.exit()
-                    elif is_draw():
-                        show_message("Draw!")
-                        pygame.quit()
-                        sys.exit()
+                if check_win("O"):
+                    show_message("AI Wins!")
+                    pygame.quit()
+                    sys.exit()
+                elif is_draw():
+                    show_message("Draw!")
+                    pygame.quit()
+                    sys.exit()
 
-                    current_player = "X"
-
-            # after player move (X)
-            if check_win("X"):
-                show_message("You Win!")
-                pygame.quit()
-                sys.exit()
-            elif is_draw():
-                show_message("Draw!")
-                pygame.quit()
-                sys.exit()
-
-            # after AI move (O)
-            if check_win("O"):
-                show_message("AI Wins!")
-                pygame.quit()
-                sys.exit()
-            elif is_draw():
-                show_message("Draw!")
-                pygame.quit()
-                sys.exit()
+                current_player = "X"
 
 
 
