@@ -1,43 +1,89 @@
-# 🎮 Tic-Tac-Toe Using AI algorithoms
 
-This is a simple Tic-Tac-Toe game where you play as **X** and the computer (AI) plays as **O**.
+# 🎮 Tic-Tac-Toe with AI Algorithms
 
-The AI is smart — it uses two different algorithms: **Minimax** and **Alpha-Beta Pruning**, and you can even choose how difficult the AI should be!
+An advanced Python-based Tic-Tac-Toe game where you play as **X** against an AI that uses one of four algorithms:
+- Random
+- Minimax
+- Alpha-Beta Pruning
+- Expectiminimax (Chance-Based)
 
----
-
-## 💡 What This Project Does
-
-- Lets a human play Tic-Tac-Toe against a smart computer
-- Gives you 3 difficulty options:
-  - 🟢 Easy → Random AI (just guesses)
-  - 🟡 Medium → Minimax (thinks before moving)
-  - 🔴 Hard → Alpha-Beta (super smart and fast)
-- Runs in the console (text-based)
-- Easy to understand
+Built with `pygame`, this project is designed for both fun and academic understanding of AI search strategies.
 
 ---
 
-## 🛠️ How to Run It
+## 🧠 AI Strategies
 
-1. Make sure you have **Python 3** installed.
-2. Download or clone this project:
+| Mode | Description |
+|------|-------------|
+| 1. Easy | Picks a random move |
+| 2. Medium | Uses classic Minimax |
+| 3. Hard | Uses Minimax + Alpha-Beta Pruning |
+| 4. Expectiminimax | Considers possible move failure (70% success / 30% fail) and calculates expected values |
+
+The Expectiminimax version introduces **chance nodes**, making the AI evaluate both success and failure paths before choosing a move.
+
+---
+
+## 🕹️ Controls
+
+- Press `1`, `2`, `3`, or `4` to select AI difficulty
+- Click on a square to make your move
+- The AI responds based on the selected strategy
+- Game ends when there’s a win or draw
+
+---
+
+## 📷 Screenshots
+
+
+![img_1.png](img_1.png)  
+
+![img_2.png](img_2.png)
+---
+
+## 🚀 How to Run
+
+1. Install requirements:
    ```bash
-   git clone https://github.com/AlbishriAbdullah/tic-tac-toe-using-AI-algorithms.git
-   cd tic-tac-toe-using-AI-algorithms
-3. Run the game:
+   pip install pygame
+   ```
+
+2. Run the game:
+   ```bash
+   python gui.py
+   ```
+
+3. For console version (text-based):
    ```bash
    python main.py
-4. Choose your difficulty and start playing!
+   ```
 
 ---
 
-## 🧠  How the AI Works
-Minimax: Looks at all possible moves and picks the best one
+## 📚 Expectiminimax Contribution
 
-Alpha-Beta Pruning: Same as Minimax but skips bad options to play faster
+This project goes beyond traditional AI by implementing **Expectiminimax**, a decision-making algorithm that:
+- Handles uncertainty using simulated chance nodes
+- Calculates expected value for each move: `0.7 * success_score + 0.3 * fail_score`
+- Introduces realistic unpredictability into a deterministic game
+- Demonstrates planning under uncertainty
 
-You can switch between them using the difficulty menu at the start of the game.
 
+---
+
+## 📁 Project Structure
+
+```
+.
+├── gui_main.py              # GUI version using pygame
+├── main.py                  # Console version
+├── tictactoe.py             # Shared game logic
+├── minimax_ai.py
+├── alpha_beta_ai.py
+├── expectiminimax_ai.py     # New algorithm (chance-based)
+├── assets/
+│   └── sounds/              # Sound effects
+└── README.md                # This file
+```
 
 
