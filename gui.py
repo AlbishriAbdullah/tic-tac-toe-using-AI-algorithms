@@ -3,6 +3,7 @@ import sys
 import random
 from minimax_ai import get_best_move as minimax_move
 from alpha_beta_ai import get_best_move as alpha_beta_move
+from expectiminimax import get_best_move as expectiminimax_move
 from tictactoe import get_available_moves
 
 pygame.mixer.init()
@@ -87,15 +88,19 @@ def show_message(text):
 def draw_difficulty_menu():
     screen.fill((0, 0, 0))
     font = pygame.font.SysFont(None, 60)
+    small_font = pygame.font.SysFont(None,45)
     title = font.render("Choose Difficulty", True, (255, 255, 255))
     easy = font.render("1 - Easy (Random)", True, (0, 255, 0))
     medium = font.render("2 - Medium (Minimax)", True, (255, 255, 0))
     hard = font.render("3 - Hard (Alpha-Beta)", True, (255, 0, 0))
+    expectiminimax = small_font.render("4 - Expectiminimax (Chance-Based)", True, (0, 200, 255))
+
 
     screen.blit(title, (WIDTH//2 - title.get_width()//2, 80))
     screen.blit(easy, (WIDTH//2 - easy.get_width()//2, 200))
     screen.blit(medium, (WIDTH//2 - medium.get_width()//2, 300))
     screen.blit(hard, (WIDTH//2 - hard.get_width()//2, 400))
+    screen.blit(expectiminimax, (WIDTH // 2 - expectiminimax.get_width() // 2, 480))
     pygame.display.update()
 
 def get_ai_move(flat_board, mode):
@@ -105,6 +110,8 @@ def get_ai_move(flat_board, mode):
         return minimax_move(flat_board)
     elif mode == "hard":
         return alpha_beta_move(flat_board)
+    elif mode == "expectiminimax":
+        return expectiminimax_move(flat_board)
 
 # difficulty selection
 draw_difficulty_menu()
@@ -123,6 +130,9 @@ while selecting:
                 selecting = False
             elif event.key == pygame.K_3:
                 difficulty = "hard"
+                selecting = False
+            elif event.key == pygame.K_4:
+                difficulty = "expectiminimax"
                 selecting = False
 
 # initialize the game
