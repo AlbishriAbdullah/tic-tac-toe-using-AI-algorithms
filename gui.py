@@ -2,28 +2,26 @@ import pygame
 import sys
 from minimax_ai import get_best_move as minimax_move
 
-# Initialize pygame
 pygame.init()
 
-# Screen settings
+# screen borders
 WIDTH, HEIGHT = 600, 600
 LINE_WIDTH = 15
 BG_COLOR = (28, 170, 156)
 LINE_COLOR = (23, 145, 135)
 
-# Create screen
+# create screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tic-Tac-Toe AI")
 
-# Draw background
+# draw background
 screen.fill(BG_COLOR)
 
-# Draw grid lines
 def draw_lines():
-    # Horizontal
+    # horizontal lines
     pygame.draw.line(screen, LINE_COLOR, (0, 200), (600, 200), LINE_WIDTH)
     pygame.draw.line(screen, LINE_COLOR, (0, 400), (600, 400), LINE_WIDTH)
-    # Vertical
+    # vertical lines
     pygame.draw.line(screen, LINE_COLOR, (200, 0), (200, 600), LINE_WIDTH)
     pygame.draw.line(screen, LINE_COLOR, (400, 0), (400, 600), LINE_WIDTH)
 
@@ -33,22 +31,24 @@ def draw_symbol(row, col, player):
     centerY = row * 200 + 100
 
     if player == "X":
-        # Draw X
+        # draw X
         offset = 50
         pygame.draw.line(screen, (84, 84, 84), (centerX - offset, centerY - offset),
                          (centerX + offset, centerY + offset), 15)
         pygame.draw.line(screen, (84, 84, 84), (centerX - offset, centerY + offset),
                          (centerX + offset, centerY - offset), 15)
     elif player == "O":
-        # Draw O
+        # draw O
         pygame.draw.circle(screen, (242, 235, 211), (centerX, centerY), 60, 15)
 
 pygame.display.update()
 
-# Game board state (3x3 grid)
+# game board state (3x3 grid)
 board = [["" for _ in range(3)] for _ in range(3)]
 
-# Player turns: "X" = Human, "O" = AI
+# Player turns:
+# "X" = Human
+# "O" = AI
 current_player = "X"
 
 
@@ -60,7 +60,6 @@ def flatten_board(board_2d):
     return flat
 
 def check_win(player):
-    # Check rows, columns, diagonals
     for row in range(3):
         if board[row][0] == board[row][1] == board[row][2] == player:
             return True
@@ -88,7 +87,7 @@ def show_message(text):
     pygame.display.update()
     pygame.time.delay(2000)  # wait 2 seconds
 
-# Main game loop
+# main loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -107,11 +106,11 @@ while True:
                 draw_symbol(clicked_row, clicked_col, "X")
                 pygame.display.update()
 
-                # Let AI respond as "O"
+                # let AI respond as "O"
                 current_player = "O"
-                pygame.time.delay(500)  # slight delay for realism
+                pygame.time.delay(500)  # delay to mimic the real world game
 
-                # Check for draw before AI moves
+                # check for draw before AI moves ( always check before moves)
                 if is_draw():
                     show_message("Draw!")
                     pygame.quit()
@@ -140,7 +139,7 @@ while True:
 
                     current_player = "X"
 
-            # After player move (X)
+            # after player move (X)
             if check_win("X"):
                 show_message("You Win!")
                 pygame.quit()
@@ -150,7 +149,7 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-            # After AI move (O)
+            # after AI move (O)
             if check_win("O"):
                 show_message("AI Wins!")
                 pygame.quit()
