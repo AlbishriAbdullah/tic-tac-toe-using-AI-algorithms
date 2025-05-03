@@ -83,6 +83,7 @@ This project goes beyond traditional AI by implementing **Expectiminimax**, a de
 ├── expectiminimax_ai.py     # New algorithm (chance-based)
 ├── assets/
 │   └── sounds/              # Sound effects
+    └── screenshots/         # Screenshots
 └── README.md                # This file
 ```
 
